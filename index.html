@@ -1,1555 +1,653 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#08050f">
+  <meta name="description" content="X AURA - التسجيل الرسمي للكلان">
+  <title>X AURA | Clan Registration</title>
 
-<title>X AURA | Clan Registration</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-body{
-    font-family:'Cairo',sans-serif;
-    background:
-        radial-gradient(circle at top,#29104d 0%,#090910 38%,#050507 100%);
-    color:#fff;
-    min-height:100vh;
-}
-
-body:before{
-    content:"";
-    position:fixed;
-    inset:0;
-    pointer-events:none;
-    background:
-        linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
-    background-size:35px 35px;
-}
-
-header{
-    text-align:center;
-    padding:45px 20px 25px;
-}
-
-.logo{
-    font-size:52px;
-    font-weight:900;
-    letter-spacing:4px;
-    text-shadow:
-        0 0 10px #9b4dff,
-        0 0 25px #7b2cff,
-        0 0 50px #7b2cff;
-}
-
-.subtitle{
-    color:#aaa;
-    margin-top:5px;
-    font-size:15px;
-}
-
-.container{
-    width:min(950px,94%);
-    margin:auto;
-}
-
-.card{
-    background:rgba(16,16,25,.88);
-    border:1px solid rgba(157,77,255,.35);
-    border-radius:24px;
-    padding:28px;
-    margin-bottom:25px;
-    box-shadow:
-        0 0 35px rgba(117,38,255,.12),
-        inset 0 0 30px rgba(255,255,255,.015);
-}
-
-.title{
-    font-size:24px;
-    font-weight:800;
-    margin-bottom:18px;
-}
-
-.condition{
-    display:flex;
-    gap:12px;
-    align-items:flex-start;
-    padding:13px;
-    margin:9px 0;
-    background:rgba(255,255,255,.035);
-    border-radius:14px;
-    border-right:3px solid #8c42ff;
-    color:#ddd;
-    line-height:1.8;
-}
-
-.check{
-    color:#48ff91;
-    font-size:19px;
-    font-weight:bold;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:16px;
-}
-
-.field{
-    display:flex;
-    flex-direction:column;
-    gap:7px;
-}
-
-.field label{
-    font-weight:700;
-    color:#ddd;
-}
-
-.field input,
-.field select{
-    width:100%;
-    padding:14px;
-    border-radius:13px;
-    border:1px solid #30303d;
-    outline:none;
-    background:#0c0c12;
-    color:white;
-    font-family:inherit;
-}
-
-.field input:focus,
-.field select:focus{
-    border-color:#9148ff;
-    box-shadow:0 0 15px rgba(145,72,255,.25);
-}
-
-button{
-    font-family:inherit;
-    cursor:pointer;
-}
-
-.submit{
-    width:100%;
-    margin-top:22px;
-    padding:16px;
-    border:0;
-    border-radius:14px;
-    background:linear-gradient(135deg,#7b2cff,#b44dff);
-    color:white;
-    font-size:17px;
-    font-weight:800;
-    box-shadow:0 0 25px rgba(123,44,255,.35);
-}
-
-.submit:disabled{
-    opacity:.6;
-    cursor:not-allowed;
-}
-
-.success{
-    display:none;
-    text-align:center;
-    padding:20px;
-    margin-top:18px;
-    border-radius:15px;
-    background:rgba(50,255,130,.08);
-    border:1px solid rgba(50,255,130,.3);
-    color:#63ff9e;
-}
-
-.stats{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:14px;
-}
-
-.stat{
-    text-align:center;
-    padding:20px;
-    background:#0c0c13;
-    border-radius:16px;
-    border:1px solid #252532;
-}
-
-.stat-number{
-    font-size:30px;
-    font-weight:900;
-    color:#b46aff;
-}
-
-.stat-text{
-    color:#aaa;
-    font-size:13px;
-}
-
-#adminPanel{
-    display:none;
-}
-
-.admin-login-card{
-    text-align:center;
-}
-
-.small-btn{
-    border:1px solid #383844;
-    background:#11111a;
-    color:white;
-    padding:10px 14px;
-    border-radius:10px;
-}
-
-.admin-login-button{
-    width:100%;
-    max-width:300px;
-    border-color:#8c42ff;
-    background:linear-gradient(135deg,#17111f,#24113a);
-    font-weight:800;
-}
-
-.admin-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.admin-buttons{
-    display:flex;
-    gap:8px;
-}
-
-.search{
-    width:100%;
-    margin:20px 0;
-    padding:13px;
-    border-radius:12px;
-    border:1px solid #333340;
-    background:#0b0b11;
-    color:white;
-    outline:none;
-    font-family:inherit;
-}
-
-.notification{
-    background:rgba(140,66,255,.12);
-    border:1px solid rgba(140,66,255,.3);
-    padding:12px;
-    border-radius:12px;
-    margin-bottom:15px;
-    color:#ddd;
-}
-
-.error-box{
-    display:none;
-    background:rgba(255,50,70,.10);
-    border:1px solid rgba(255,50,70,.35);
-    color:#ff858f;
-    padding:14px;
-    border-radius:12px;
-    margin:15px 0;
-    line-height:1.8;
-}
-
-.member{
-    background:#0c0c13;
-    border:1px solid #262633;
-    border-radius:16px;
-    padding:17px;
-    margin:10px 0;
-}
-
-.member-head{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.member-name{
-    font-size:18px;
-    font-weight:800;
-}
-
-.member-info{
-    color:#aaa;
-    font-size:13px;
-    line-height:2;
-    margin-top:8px;
-}
-
-.delete{
-    background:#42151b;
-    border:1px solid #7d252f;
-    color:#ff8790;
-    padding:7px 11px;
-    border-radius:8px;
-}
-
-footer{
-    text-align:center;
-    padding:30px 15px;
-    color:#777;
-    font-size:12px;
-}
-
-@media(max-width:650px){
-
-    .logo{
-        font-size:39px;
+  <style>
+    :root{
+      --bg:#07060b;--card:#100d18;--card2:#151020;
+      --line:rgba(174,92,255,.22);--purple:#9b4dff;--purple2:#c77dff;
+      --text:#fff;--muted:#aaa3b7;--danger:#ff5577;--success:#35e69a;
+      --shadow:0 20px 70px rgba(0,0,0,.45);
     }
-
-    .card{
-        padding:20px;
-        border-radius:19px;
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;color:var(--text);
+      font-family:Arial,"Tajawal",sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%,rgba(155,77,255,.18),transparent 30%),
+        radial-gradient(circle at 90% 80%,rgba(100,50,200,.12),transparent 30%),var(--bg);
     }
-
-    .form-grid{
-        grid-template-columns:1fr;
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .container{width:min(1080px,92%);margin:auto}
+    header{position:sticky;top:0;z-index:20;backdrop-filter:blur(16px);
+      background:rgba(7,6,11,.78);border-bottom:1px solid var(--line)}
+    .nav{min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+    .logo{font-weight:900;letter-spacing:2px;font-size:24px;
+      background:linear-gradient(90deg,#fff,var(--purple2));-webkit-background-clip:text;
+      background-clip:text;color:transparent}
+    .nav button,.ghost{border:1px solid var(--line);background:rgba(255,255,255,.04);
+      color:#fff;padding:10px 15px;border-radius:12px}
+    .hero{padding:65px 0 30px;text-align:center}
+    .badge{display:inline-flex;padding:7px 13px;border:1px solid var(--line);
+      border-radius:999px;background:rgba(155,77,255,.08);color:var(--purple2);font-size:13px}
+    h1{font-size:clamp(42px,10vw,78px);margin:18px 0 8px;letter-spacing:5px}
+    .hero p{color:var(--muted);max-width:650px;margin:auto;line-height:1.8}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start;padding:25px 0 70px}
+    .card{background:linear-gradient(180deg,rgba(21,16,32,.96),rgba(12,10,18,.96));
+      border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}
+    .card h2{margin-top:0}
+    .sub{color:var(--muted);font-size:14px;line-height:1.7}
+    .fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .field{display:flex;flex-direction:column;gap:7px}
+    label{font-size:13px;color:#d8d2df}
+    input,select{width:100%;padding:13px 14px;border-radius:13px;border:1px solid rgba(255,255,255,.09);
+      background:#0b0910;color:#fff;outline:none}
+    input:focus,select:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(155,77,255,.12)}
+    .submit{width:100%;margin-top:17px;padding:14px;border:0;border-radius:14px;color:#fff;
+      font-weight:800;background:linear-gradient(135deg,#7b2cff,#b14cff);box-shadow:0 12px 35px rgba(130,45,255,.25)}
+    .submit:disabled{opacity:.6;cursor:not-allowed}
+    .features{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    .feature{padding:14px;border-radius:14px;background:rgba(255,255,255,.035);
+      border:1px solid rgba(255,255,255,.06);font-size:13px;color:#d5cedd;margin-top:10px}
+    .feature b{display:block;color:#fff;margin-bottom:5px}
+    .admin{display:none;padding:25px 0 70px}
+    .admin-top{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:18px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+    .stat{padding:18px;border:1px solid var(--line);border-radius:18px;background:rgba(255,255,255,.035)}
+    .stat span{display:block;color:var(--muted);font-size:13px}.stat strong{font-size:30px}
+    .members{display:grid;gap:10px}
+    .member{display:grid;grid-template-columns:1.2fr 1fr .6fr 1fr 1fr auto;gap:10px;
+      align-items:center;padding:15px;border:1px solid rgba(255,255,255,.07);
+      border-radius:15px;background:rgba(255,255,255,.025);font-size:13px}
+    .member small{display:block;color:var(--muted);margin-top:3px}
+    .danger{background:rgba(255,85,119,.1);border:1px solid rgba(255,85,119,.25);
+      color:#ff8da5;padding:8px 10px;border-radius:10px}
+    .notification{position:fixed;top:18px;left:18px;z-index:99;min-width:280px;
+      max-width:calc(100% - 36px);padding:15px 17px;border-radius:15px;background:#17121f;
+      border:1px solid var(--line);box-shadow:var(--shadow);transform:translateY(-130%);transition:.35s}
+    .notification.show{transform:translateY(0)}
+    .notification b{display:block;margin-bottom:4px}.notification span{color:var(--muted);font-size:13px}
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;place-items:center;
+      padding:20px;z-index:50;backdrop-filter:blur(8px)}
+    .modal.show{display:grid}
+    .modal-card{width:min(430px,100%);background:#110d18;border:1px solid var(--line);
+      border-radius:22px;padding:24px}
+    .modal-actions{display:flex;gap:10px;margin-top:15px}
+    .modal-actions button{flex:1;padding:12px;border-radius:12px}
+    .close{background:#25202d;color:#fff;border:0}.login{background:var(--purple);color:#fff;border:0}
+    footer{padding:25px;text-align:center;color:#777;font-size:12px;border-top:1px solid rgba(255,255,255,.05)}
+    .hidden{display:none!important}
+    @media(max-width:760px){
+      .grid{grid-template-columns:1fr}.fields{grid-template-columns:1fr}
+      .stats{grid-template-columns:1fr 1fr}.member{grid-template-columns:1fr 1fr}
+      .member .delete{grid-column:1/-1}.hero{padding-top:45px}
     }
-
-    .stats{
-        grid-template-columns:1fr;
-    }
-}
-</style>
+  </style>
 </head>
-
 <body>
 
-<header>
-    <div class="logo">X AURA</div>
-    <div class="subtitle">OFFICIAL CLAN REGISTRATION</div>
-</header>
-
-<div class="container">
-
-<!-- شروط الكلان -->
-<section class="card">
-
-    <div class="title">⚡ شروط الانضمام إلى X AURA</div>
-
-    <div class="condition">
-        <span class="check">✓</span>
-        <span>
-            تكون تلعب حروب الرابطة وتجمع
-            <b>150 نقطة</b>.
-        </span>
-    </div>
-
-    <div class="condition">
-        <span class="check">✓</span>
-        <span>
-            تجمع <b>5 آلاف غلوري فما فوق أسبوعيًا</b>
-            عن طريق اللعب مع أعضاء الكلان.
-        </span>
-    </div>
-
-    <div class="condition">
-        <span class="check">✓</span>
-        <span>
-            تكون لفل <b>50 فما فوق</b> وتكون لاعب
-            <b>Battle Royale</b>.
-        </span>
-    </div>
-
-    <div class="condition">
-        <span class="check">✓</span>
-        <span>
-            الاسم ليس مشكلة حاليًا، لكن عند وصول الكلان
-            إلى <b>Level 7</b> وبدء الفعاليات يجب تغيير
-            الأسماء حتى يصبح الكلان بهوية قوية.
-        </span>
-    </div>
-
-    <div class="condition">
-        <span class="check">✓</span>
-        <span>
-            احترام جميع الأعضاء حتى يسود النظام والأمان
-            داخل X AURA.
-        </span>
-    </div>
-
-</section>
-
-
-<!-- الإحصائيات -->
-<section class="card">
-
-    <div class="stats">
-
-        <div class="stat">
-            <div class="stat-number" id="memberCount">0</div>
-            <div class="stat-text">الأعضاء المسجلون</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-number">X</div>
-            <div class="stat-text">AURA CLAN</div>
-        </div>
-
-        <div class="stat">
-            <div class="stat-number">7</div>
-            <div class="stat-text">الهدف القادم</div>
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- التسجيل -->
-<section class="card">
-
-    <div class="title">📝 تسجيل عضو جديد</div>
-
-    <form id="registerForm">
-
-        <div class="form-grid">
-
-            <div class="field">
-                <label>الاسم</label>
-                <input
-                    id="firstName"
-                    type="text"
-                    placeholder="اكتب اسمك"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label>اللقب</label>
-                <input
-                    id="nickname"
-                    type="text"
-                    placeholder="اكتب لقبك"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label>العمر</label>
-                <input
-                    id="age"
-                    type="number"
-                    min="13"
-                    max="80"
-                    placeholder="العمر"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label>Free Fire ID</label>
-                <input
-                    id="ffid"
-                    type="text"
-                    inputmode="numeric"
-                    maxlength="20"
-                    placeholder="مثال: 123456789"
-                    required
-                >
-            </div>
-
-            <div class="field">
-                <label>البلد</label>
-
-                <select id="country" required>
-
-                    <option value="">اختر بلدك</option>
-                    <option>الجزائر 🇩🇿</option>
-                    <option>المغرب 🇲🇦</option>
-                    <option>تونس 🇹🇳</option>
-                    <option>ليبيا 🇱🇾</option>
-                    <option>مصر 🇪🇬</option>
-                    <option>السعودية 🇸🇦</option>
-                    <option>العراق 🇮🇶</option>
-                    <option>الأردن 🇯🇴</option>
-                    <option>فلسطين 🇵🇸</option>
-                    <option>سوريا 🇸🇾</option>
-                    <option>موريتانيا 🇲🇷</option>
-                    <option>أخرى</option>
-
-                </select>
-            </div>
-
-            <div class="field">
-                <label>اسم Instagram</label>
-
-                <input
-                    id="instagram"
-                    type="text"
-                    placeholder="@username"
-                    required
-                >
-            </div>
-
-        </div>
-
-        <button
-            class="submit"
-            id="submitButton"
-            type="submit"
-        >
-            🚀 تسجيل في X AURA
-        </button>
-
-    </form>
-
-    <div class="success" id="success">
-
-        🎉 تم تسجيلك بنجاح في X AURA
-
-        <br>
-
-        سيتم مراجعة بياناتك من إدارة الكلان.
-
-    </div>
-
-</section>
-
-
-<!-- دخول الإدارة -->
-<section class="card admin-login-card">
-
-    <button
-        class="small-btn admin-login-button"
-        onclick="openAdmin()"
-    >
-        🔐 دخول الإدارة
-    </button>
-
-</section>
-
-
-<!-- لوحة الإدارة -->
-<section class="card" id="adminPanel">
-
-    <div class="admin-top">
-
-        <div class="title">
-            🔐 لوحة إدارة X AURA
-        </div>
-
-        <div class="admin-buttons">
-
-            <button
-                class="small-btn"
-                onclick="exportCSV()"
-            >
-                📥 تصدير CSV
-            </button>
-
-            <button
-                class="small-btn"
-                onclick="logoutAdmin()"
-            >
-                تسجيل الخروج
-            </button>
-
-        </div>
-
-    </div>
-
-    <div
-        class="error-box"
-        id="adminError"
-    ></div>
-
-    <div
-        class="notification"
-        id="notificationBox"
-    >
-        جاري تحميل الأعضاء...
-    </div>
-
-    <input
-        class="search"
-        id="search"
-        placeholder="🔎 ابحث بالاسم أو اللقب أو ID..."
-        oninput="filterMembers()"
-    >
-
-    <div id="members"></div>
-
-</section>
-
-
-<footer>
-    © 2026 X AURA — Official Clan Registration
-</footer>
-
+<div id="toast" class="notification">
+  <b id="toastTitle">🔔 X AURA</b>
+  <span id="toastText"></span>
 </div>
 
+<header>
+  <div class="container nav">
+    <div class="logo">X AURA</div>
+    <button id="adminBtn">لوحة الإدارة 🔐</button>
+  </div>
+</header>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<main id="publicPage">
+  <section class="hero container">
+    <span class="badge">FREE FIRE • OFFICIAL CLAN REGISTRATION</span>
+    <h1>X AURA</h1>
+    <p>بوابة التسجيل الرسمية لأعضاء كلان X AURA. أدخل معلوماتك بدقة ليتم إرسال طلب التسجيل إلى الإدارة.</p>
+  </section>
+
+  <section class="container grid">
+    <div class="card">
+      <h2>تسجيل عضو جديد</h2>
+      <p class="sub">جميع الخانات التالية مطلوبة.</p>
+
+      <form id="registerForm">
+        <div class="fields">
+          <div class="field">
+            <label>الاسم</label>
+            <input id="firstName" maxlength="40" required placeholder="اكتب اسمك">
+          </div>
+          <div class="field">
+            <label>اللقب</label>
+            <input id="nickname" maxlength="40" required placeholder="لقبك داخل الكلان">
+          </div>
+          <div class="field">
+            <label>العمر</label>
+            <input id="age" type="number" min="13" max="99" required placeholder="العمر">
+          </div>
+          <div class="field">
+            <label>Free Fire ID</label>
+            <input id="ffid" inputmode="numeric" maxlength="20" required placeholder="مثال: 123456789">
+          </div>
+          <div class="field">
+            <label>البلد</label>
+            <select id="country" required>
+              <option value="">اختر البلد</option>
+              <option>الجزائر</option><option>المغرب</option><option>تونس</option>
+              <option>ليبيا</option><option>مصر</option><option>السعودية</option>
+              <option>الإمارات</option><option>العراق</option><option>الأردن</option>
+              <option>فلسطين</option><option>سوريا</option><option>لبنان</option>
+              <option>موريتانيا</option><option>اليمن</option><option>أخرى</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>اسم Instagram</label>
+            <input id="instagram" maxlength="50" required placeholder="@username">
+          </div>
+        </div>
+        <button class="submit" id="submitBtn">إرسال طلب التسجيل</button>
+      </form>
+
+      <div class="features">
+        <div class="feature"><b>🔒 خصوصية</b>بيانات التسجيل مخصصة للإدارة.</div>
+        <div class="feature"><b>⚡ سريع</b>إرسال مباشر إلى قاعدة البيانات.</div>
+        <div class="feature"><b>🛡️ حماية</b>تحقق من البيانات قبل الإرسال.</div>
+        <div class="feature"><b>🔔 تنبيه</b>يظهر التسجيل الجديد للإدارة.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>عن X AURA</h2>
+      <p class="sub">بعد إرسال الطلب، تتم إضافة معلوماتك إلى قائمة التسجيلات الخاصة بالإدارة.</p>
+      <div class="feature"><b>🎯 هدفنا</b>تنظيم أعضاء الكلان وتسهيل إدارة بيانات اللاعبين.</div>
+      <div class="feature"><b>👥 الأعضاء</b>لوحة الإدارة تعرض التسجيلات الجديدة بشكل مرتب.</div>
+      <div class="feature"><b>📊 الإدارة</b>بحث، حذف، إحصائيات، وتصدير CSV.</div>
+    </div>
+  </section>
+</main>
+
+<section id="adminPage" class="admin container">
+  <div class="admin-top">
+    <div>
+      <h2>لوحة إدارة X AURA</h2>
+      <div class="sub">الأعضاء الموجودون في Supabase يظهرون هنا.</div>
+    </div>
+    <button class="ghost" id="logoutBtn">تسجيل الخروج</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>إجمالي الأعضاء</span><strong id="totalMembers">0</strong></div>
+    <div class="stat"><span>تسجيلات اليوم</span><strong id="todayMembers">0</strong></div>
+    <div class="stat"><span>إشعارات جديدة</span><strong id="newCount">0</strong></div>
+  </div>
+
+  <div class="card">
+    <div style="display:flex;gap:10px;margin-bottom:15px">
+      <input id="search" placeholder="🔎 ابحث بالاسم أو اللقب أو ID أو البلد">
+      <button class="ghost" id="csvBtn">📥 CSV</button>
+    </div>
+    <div id="members" class="members"></div>
+  </div>
+</section>
+
+<footer>X AURA © 2026 — Clan Registration</footer>
+
+<div id="loginModal" class="modal">
+  <div class="modal-card">
+    <h2>دخول الإدارة</h2>
+    <p class="sub">سجّل الدخول بحساب المسؤول الموجود في Supabase Authentication.</p>
+    <div class="field">
+      <label>البريد الإلكتروني</label>
+      <input id="email" type="email" autocomplete="username">
+    </div>
+    <div class="field" style="margin-top:12px">
+      <label>كلمة المرور</label>
+      <input id="password" type="password" autocomplete="current-password">
+    </div>
+    <div class="modal-actions">
+      <button class="close" id="closeLogin">إلغاء</button>
+      <button class="login" id="loginBtn">دخول</button>
+    </div>
+  </div>
+</div>
 
 <script>
+/* =========================================================
+   X AURA / SUPABASE
+   مهم: الـ ANON/PUBLISHABLE KEY هو المفتاح العام للمشروع.
+   لا تضع service_role key هنا.
+   ========================================================= */
 
-/* =========================================
-   SUPABASE
-========================================= */
+const SUPABASE_URL = "https://pbdhgemotbjhkqgltikw.supabase.co";
 
-const SUPABASE_URL =
-    "https://pbdhgemotbjhkqgltikw.supabase.co";
+/*
+  ضع هنا ANON/PUBLISHABLE KEY الخاص بمشروعك.
+  هو الشيء الوحيد الذي لا أستطيع استخراجه من ملفك القديم
+  لأنه لم يكن محفوظًا فيه.
+*/
+const SUPABASE_ANON_KEY = "sb_publishable_KE61YXL9Dyk4LT7fmEtd1A_HmvRvE3q";
 
-const SUPABASE_KEY =
-    "sb_publishable_KE61YXL9Dyk4LT7fmEtd1A_HmvRvE3q";
+const ADMIN_UID = "6d0534ab-5c4d-4d96-90da-3b91146c6e3b";
 
-const ADMIN_UID =
-    "6d0534ab-5c4d-4d96-90da-3b91146c6e3b";
+let db = null;
 
-const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-    );
-
-
-/* =========================================
-   VARIABLES
-========================================= */
-
-let allMembers = [];
-
-
-/* =========================================
-   HELPERS
-========================================= */
-
-function escapeHTML(value){
-
-    return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-
+if (
+  !SUPABASE_ANON_KEY.includes("ضع_") &&
+  window.supabase
+) {
+  db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-function csvEscape(value){
+const $ = id => document.getElementById(id);
 
-    return String(value ?? "")
-        .replaceAll('"','""');
-
+function toast(title, text){
+  $("toastTitle").textContent = title;
+  $("toastText").textContent = text;
+  $("toast").classList.add("show");
+  setTimeout(() => $("toast").classList.remove("show"), 4500);
 }
 
-
-function showAdminError(message){
-
-    const box =
-        document.getElementById("adminError");
-
-    box.innerHTML = message;
-
-    box.style.display = "block";
-
+function databaseReady(){
+  if(!db){
+    toast("⚠️ إعداد Supabase ناقص","ضع ANON/PUBLISHABLE KEY في المكان المحدد داخل الملف.");
+    return false;
+  }
+  return true;
 }
 
+/* =========================
+   تسجيل عضو جديد
+   ========================= */
 
-function hideAdminError(){
+$("registerForm").addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  if(!databaseReady()) return;
 
-    const box =
-        document.getElementById("adminError");
+  const first_name = $("firstName").value.trim();
+  const nickname = $("nickname").value.trim();
+  const age = Number($("age").value);
+  const ffid = $("ffid").value.trim();
+  const country = $("country").value;
+  const instagram = $("instagram").value.trim();
 
-    box.style.display = "none";
+  if(!first_name || !nickname || !age || !ffid || !country || !instagram){
+    toast("⚠️ بيانات ناقصة","أكمل جميع الخانات.");
+    return;
+  }
 
-}
+  if(age < 13 || age > 99){
+    toast("⚠️ العمر غير صحيح","أدخل عمرًا بين 13 و99.");
+    return;
+  }
 
+  if(!/^\d{1,20}$/.test(ffid)){
+    toast("⚠️ Free Fire ID غير صحيح","أدخل الـ ID بالأرقام فقط.");
+    return;
+  }
 
-/* =========================================
-   CHECK ADMIN
-========================================= */
+  const btn = $("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "جاري التسجيل...";
 
-async function isAdmin(){
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient.auth.getUser();
+  try{
+    /*
+      الإصلاح الأساسي:
+      جدولك يستخدم العمود ffid وليس free_fire_id.
+      كذلك لا ننفذ SELECT قبل INSERT لأن الزائر anon
+      لديه صلاحية INSERT فقط، وليس SELECT.
+    */
+    const { error } = await db.from("members").insert([{
+      first_name,
+      nickname,
+      age,
+      ffid,
+      country,
+      instagram
+    }]);
 
     if(error){
-
-        console.error(
-            "GET USER ERROR:",
-            error
-        );
-
-        return false;
+      if(error.code === "23505"){
+        toast("⚠️ ID مسجل مسبقًا","هذا Free Fire ID موجود بالفعل.");
+      }else if(error.code === "23502"){
+        toast("❌ خطأ في بنية الجدول","تأكد أن الأعمدة هي: first_name, nickname, age, ffid, country, instagram.");
+        console.error(error);
+      }else if(error.code === "42501"){
+        toast("❌ صلاحية Supabase","سياسة INSERT للزوار غير صحيحة.");
+        console.error(error);
+      }else{
+        toast("❌ خطأ Supabase", error.message || "تعذر التسجيل.");
+        console.error(error);
+      }
+      return;
     }
 
-    if(!data || !data.user){
-
-        return false;
-    }
-
-    console.log(
-        "Current UID:",
-        data.user.id
-    );
-
-    return data.user.id === ADMIN_UID;
-}
-
-
-/* =========================================
-   REGISTER
-========================================= */
-
-document
-.getElementById("registerForm")
-.addEventListener(
-    "submit",
-    async function(e){
-
-        e.preventDefault();
-
-        const button =
-            document.getElementById("submitButton");
-
-        const firstName =
-            document
-            .getElementById("firstName")
-            .value
-            .trim();
-
-        const nickname =
-            document
-            .getElementById("nickname")
-            .value
-            .trim();
-
-        const age =
-            Number(
-                document
-                .getElementById("age")
-                .value
-            );
-
-        const ffid =
-            document
-            .getElementById("ffid")
-            .value
-            .trim();
-
-        const country =
-            document
-            .getElementById("country")
-            .value;
-
-        const instagram =
-            document
-            .getElementById("instagram")
-            .value
-            .trim();
-
-
-        if(
-            !firstName ||
-            !nickname ||
-            !age ||
-            !ffid ||
-            !country ||
-            !instagram
-        ){
-
-            alert(
-                "يرجى ملء جميع الخانات."
-            );
-
-            return;
-        }
-
-
-        if(age < 13 || age > 80){
-
-            alert(
-                "يرجى إدخال عمر صحيح."
-            );
-
-            return;
-        }
-
-
-        if(!/^\d{1,20}$/.test(ffid)){
-
-            alert(
-                "Free Fire ID يجب أن يحتوي على أرقام فقط."
-            );
-
-            return;
-        }
-
-
-        button.disabled = true;
-
-        button.textContent =
-            "⏳ جاري التسجيل...";
-
-
-        try{
-
-            const {
-                error
-            } =
-            await supabaseClient
-            .from("members")
-            .insert({
-
-                first_name: firstName,
-                nickname: nickname,
-                age: age,
-                ffid: ffid,
-                country: country,
-                instagram: instagram
-
-            });
-
-
-            if(error){
-
-                console.error(
-                    "INSERT ERROR:",
-                    error
-                );
-
-
-                if(error.code === "23505"){
-
-                    alert(
-                        "هذا الـ Free Fire ID مسجل بالفعل."
-                    );
-
-                }else{
-
-                    alert(
-                        "خطأ Supabase:\n\n" +
-                        "Code: " +
-                        (error.code || "غير معروف") +
-                        "\n\n" +
-                        "Message: " +
-                        (error.message || "غير معروف")
-                    );
-                }
-
-                return;
-            }
-
-
-            document
-            .getElementById("registerForm")
-            .reset();
-
-
-            const success =
-                document.getElementById("success");
-
-            success.style.display =
-                "block";
-
-
-            await updateStats();
-
-
-            setTimeout(
-                function(){
-
-                    success.style.display =
-                        "none";
-
-                },
-                5000
-            );
-
-
-        }catch(error){
-
-            console.error(error);
-
-            alert(
-                "حدث خطأ في الاتصال:\n\n" +
-                error.message
-            );
-
-        }finally{
-
-            button.disabled = false;
-
-            button.textContent =
-                "🚀 تسجيل في X AURA";
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   ADMIN LOGIN
-========================================= */
-
-async function openAdmin(){
-
-    const email =
-        prompt(
-            "أدخل بريد حساب الإدارة:"
-        );
-
-    if(!email){
-
-        return;
-    }
-
-
-    const password =
-        prompt(
-            "أدخل كلمة مرور حساب الإدارة:"
-        );
-
-    if(!password){
-
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient.auth.signInWithPassword({
-
-        email: email,
-        password: password
-
+    $("registerForm").reset();
+    toast("🎉 تم التسجيل","تم تسجيلك بنجاح في X AURA.");
+  }catch(err){
+    console.error(err);
+    toast("❌ خطأ","حدث خطأ أثناء التسجيل. حاول مرة أخرى.");
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "إرسال طلب التسجيل";
+  }
+});
+
+/* =========================
+   دخول الإدارة
+   ========================= */
+
+$("adminBtn").onclick = async ()=>{
+  if(!databaseReady()) return;
+
+  const { data:{session} } = await db.auth.getSession();
+
+  if(session){
+    await openAdminAfterAuth(session);
+  }else{
+    $("loginModal").classList.add("show");
+  }
+};
+
+$("closeLogin").onclick = ()=>{
+  $("loginModal").classList.remove("show");
+};
+
+$("loginBtn").onclick = async ()=>{
+  if(!databaseReady()) return;
+
+  const email = $("email").value.trim();
+  const password = $("password").value;
+
+  if(!email || !password){
+    toast("⚠️ ناقص","أدخل البريد وكلمة المرور.");
+    return;
+  }
+
+  const btn = $("loginBtn");
+  btn.disabled = true;
+  btn.textContent = "جاري الدخول...";
+
+  try{
+    const { data, error } = await db.auth.signInWithPassword({
+      email,
+      password
     });
 
+    if(error) throw error;
 
-    if(error){
-
-        console.error(
-            "LOGIN ERROR:",
-            error
-        );
-
-        alert(
-            "بيانات الدخول غير صحيحة."
-        );
-
-        return;
+    if(!data.session){
+      throw new Error("لم يتم إنشاء جلسة تسجيل الدخول.");
     }
 
+    await openAdminAfterAuth(data.session);
+    $("loginModal").classList.remove("show");
 
-    if(
-        !data.user ||
-        data.user.id !== ADMIN_UID
-    ){
+  }catch(err){
+    console.error(err);
+    toast("❌ فشل الدخول", err.message || "البريد أو كلمة المرور غير صحيحة.");
+  }finally{
+    btn.disabled = false;
+    btn.textContent = "دخول";
+  }
+};
 
-        await supabaseClient.auth.signOut();
+async function openAdminAfterAuth(session){
+  const uid = session?.user?.id;
 
-        alert(
-            "هذا الحساب ليس حساب إدارة X AURA."
-        );
+  if(uid !== ADMIN_UID){
+    await db.auth.signOut();
+    toast("⛔ غير مصرح","هذا الحساب ليس حساب مسؤول X AURA.");
+    return;
+  }
 
-        return;
-    }
-
-
-    await showAdminPanel();
-
+  $("publicPage").style.display = "none";
+  $("adminPage").style.display = "block";
+  await loadMembers();
+  subscribeRealtime();
 }
 
+$("logoutBtn").onclick = async ()=>{
+  if(db) await db.auth.signOut();
+  $("adminPage").style.display = "none";
+  $("publicPage").style.display = "block";
+};
 
-/* =========================================
-   SHOW ADMIN
-========================================= */
+/* =========================
+   تحميل الأعضاء
+   ========================= */
 
-async function showAdminPanel(){
-
-    hideAdminError();
-
-    const panel =
-        document.getElementById("adminPanel");
-
-    panel.style.display =
-        "block";
-
-
-    await updateStats();
-
-
-    await loadMembers();
-
-
-    window.scrollTo({
-
-        top: panel.offsetTop,
-
-        behavior:"smooth"
-
-    });
-
-}
-
-
-/* =========================================
-   LOAD MEMBERS
-========================================= */
+let membersCache = [];
 
 async function loadMembers(){
+  if(!databaseReady()) return;
 
-    const notification =
-        document.getElementById(
-            "notificationBox"
-        );
-
-    notification.textContent =
-        "⏳ جاري تحميل الأعضاء...";
-
-
-    const admin =
-        await isAdmin();
-
-
-    if(!admin){
-
-        notification.textContent =
-            "🔒 يجب تسجيل الدخول بحساب الإدارة.";
-
-        allMembers = [];
-
-        renderMembers([]);
-
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } =
-    await supabaseClient
+  const { data, error } = await db
     .from("members")
-    .select(
-        "id, first_name, nickname, age, ffid, country, instagram, created_at"
-    )
-    .order(
-        "created_at",
-        {
-            ascending:false
-        }
-    );
+    .select("*")
+    .order("created_at",{ascending:false});
 
+  if(error){
+    console.error(error);
 
-    if(error){
-
-        console.error(
-            "SELECT MEMBERS ERROR:",
-            error
-        );
-
-
-        showAdminError(
-            "ليس لديك صلاحية قراءة الأعضاء.<br>" +
-            "تأكد أن حسابك يحمل UID:<br>" +
-            "<b>" +
-            ADMIN_UID +
-            "</b><br><br>" +
-            "Supabase Error:<br>" +
-            escapeHTML(
-                error.message
-            )
-        );
-
-
-        notification.textContent =
-            "❌ تعذر قراءة الأعضاء.";
-
-        return;
+    if(error.code === "42501"){
+      toast("❌ لا توجد صلاحية قراءة","حساب الإدارة يحتاج SELECT على members.");
+    }else{
+      toast("❌ خطأ","تعذر قراءة الأعضاء من Supabase.");
     }
+    return;
+  }
 
-
-    hideAdminError();
-
-
-    allMembers =
-        data || [];
-
-
-    renderMembers(
-        allMembers
-    );
-
-
+  membersCache = data || [];
+  $("newCount").textContent = 0;
+  renderMembers(membersCache);
 }
 
+function renderMembers(list){
+  $("totalMembers").textContent = list.length;
 
-/* =========================================
-   RENDER
-========================================= */
+  const today = new Date().toISOString().slice(0,10);
+  $("todayMembers").textContent =
+    list.filter(x => (x.created_at || "").slice(0,10) === today).length;
 
-function renderMembers(members){
+  const box = $("members");
 
-    const container =
-        document.getElementById(
-            "members"
-        );
+  if(!list.length){
+    box.innerHTML =
+      '<div class="sub" style="padding:25px;text-align:center">لا توجد تسجيلات.</div>';
+    return;
+  }
 
-    container.innerHTML = "";
-
-
-    document.getElementById(
-        "notificationBox"
-    ).textContent =
-
-        allMembers.length
-
-        ? `🔔 يوجد ${allMembers.length} عضو مسجل.`
-
-        : "🔔 لا توجد تسجيلات.";
-
-
-    if(!members.length){
-
-        container.innerHTML =
-            "<p style='color:#777;text-align:center;padding:20px'>" +
-            "لا توجد نتائج." +
-            "</p>";
-
-        return;
-    }
-
-
-    members.forEach(
-        function(member){
-
-            const div =
-                document.createElement("div");
-
-            div.className =
-                "member";
-
-
-            const date =
-                member.created_at
-                ? new Date(
-                    member.created_at
-                ).toLocaleString("ar-DZ")
-                : "";
-
-
-            div.innerHTML = `
-
-                <div class="member-head">
-
-                    <div class="member-name">
-
-                        ${escapeHTML(
-                            member.first_name
-                        )}
-
-                        -
-
-                        ${escapeHTML(
-                            member.nickname
-                        )}
-
-                    </div>
-
-                    <button
-                        class="delete"
-                        onclick="deleteMember('${escapeHTML(member.id)}')"
-                    >
-                        🗑️ حذف
-                    </button>
-
-                </div>
-
-                <div class="member-info">
-
-                    🎂 العمر:
-                    ${escapeHTML(member.age)}
-
-                    <br>
-
-                    🎮 Free Fire ID:
-                    <b>
-                        ${escapeHTML(member.ffid)}
-                    </b>
-
-                    <br>
-
-                    🌍 البلد:
-                    ${escapeHTML(member.country)}
-
-                    <br>
-
-                    📸 Instagram:
-                    ${escapeHTML(member.instagram)}
-
-                    <br>
-
-                    🕒 التسجيل:
-                    ${escapeHTML(date)}
-
-                </div>
-
-            `;
-
-
-            container.appendChild(div);
-
-        }
-    );
-
+  box.innerHTML = list.map(m=>`
+    <div class="member">
+      <div>
+        <b>${escapeHTML(m.first_name)}</b>
+        <small>${escapeHTML(m.nickname)}</small>
+      </div>
+      <div>
+        <b>Free Fire ID</b>
+        <small>${escapeHTML(m.ffid)}</small>
+      </div>
+      <div>
+        <b>العمر</b>
+        <small>${escapeHTML(m.age)}</small>
+      </div>
+      <div>
+        <b>البلد</b>
+        <small>${escapeHTML(m.country)}</small>
+      </div>
+      <div>
+        <b>Instagram</b>
+        <small>${escapeHTML(m.instagram)}</small>
+      </div>
+      <div class="delete">
+        <button class="danger" onclick="deleteMember('${m.id}')">حذف</button>
+      </div>
+    </div>
+  `).join("");
 }
 
-
-/* =========================================
-   SEARCH
-========================================= */
-
-function filterMembers(){
-
-    const search =
-        (
-            document
-            .getElementById("search")
-            .value || ""
-        )
-        .toLowerCase()
-        .trim();
-
-
-    const filtered =
-        allMembers.filter(
-            function(member){
-
-                return (
-
-                    String(
-                        member.first_name || ""
-                    )
-                    .toLowerCase()
-                    .includes(search)
-
-                    ||
-
-                    String(
-                        member.nickname || ""
-                    )
-                    .toLowerCase()
-                    .includes(search)
-
-                    ||
-
-                    String(
-                        member.ffid || ""
-                    )
-                    .toLowerCase()
-                    .includes(search)
-
-                );
-
-            }
-        );
-
-
-    renderMembers(
-        filtered
-    );
-
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, c => ({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#039;"
+  }[c]));
 }
 
+/* =========================
+   البحث
+   ========================= */
 
-/* =========================================
-   COUNT
-========================================= */
+$("search").addEventListener("input", ()=>{
+  const q = $("search").value.trim().toLowerCase();
 
-async function updateStats(){
+  const filtered = membersCache.filter(m =>
+    [
+      m.first_name,
+      m.nickname,
+      m.ffid,
+      m.country,
+      m.instagram
+    ].some(v => String(v ?? "").toLowerCase().includes(q))
+  );
 
-    const {
-        count,
-        error
-    } =
-    await supabaseClient
-    .from("members")
-    .select(
-        "id",
-        {
-            count:"exact",
-            head:true
-        }
-    );
+  renderMembers(filtered);
+});
 
+/* =========================
+   الحذف
+   ========================= */
 
-    if(
-        !error &&
-        count !== null
-    ){
+window.deleteMember = async function(id){
+  if(!db) return;
 
-        document
-        .getElementById(
-            "memberCount"
-        )
-        .textContent =
-            count;
+  if(!confirm("هل أنت متأكد من حذف هذا العضو؟")) return;
 
-    }
-
-}
-
-
-/* =========================================
-   DELETE
-========================================= */
-
-async function deleteMember(id){
-
-    const admin =
-        await isAdmin();
-
-
-    if(!admin){
-
-        alert(
-            "غير مصرح."
-        );
-
-        return;
-    }
-
-
-    if(
-        !confirm(
-            "هل أنت متأكد من حذف هذا العضو؟"
-        )
-    ){
-
-        return;
-    }
-
-
-    const {
-        error
-    } =
-    await supabaseClient
+  const { error } = await db
     .from("members")
     .delete()
     .eq("id",id);
 
+  if(error){
+    console.error(error);
+    toast("❌ لم يتم الحذف","تأكد من صلاحية DELETE لحساب الإدارة.");
+    return;
+  }
 
-    if(error){
+  toast("🗑️ تم الحذف","تم حذف العضو.");
+  await loadMembers();
+};
 
-        console.error(error);
+/* =========================
+   تصدير CSV
+   ========================= */
 
-        alert(
-            "لم يتم حذف العضو:\n\n" +
-            error.message
+$("csvBtn").onclick = ()=>{
+  if(!membersCache.length){
+    toast("⚠️ لا توجد بيانات","لا يوجد أعضاء لتصديرهم.");
+    return;
+  }
+
+  const headers = [
+    "الاسم","اللقب","العمر","Free Fire ID",
+    "البلد","Instagram","تاريخ التسجيل"
+  ];
+
+  const rows = membersCache.map(m=>[
+    m.first_name,
+    m.nickname,
+    m.age,
+    m.ffid,
+    m.country,
+    m.instagram,
+    m.created_at
+  ]);
+
+  const csv = "\ufeff" + [headers,...rows]
+    .map(row =>
+      row.map(v =>
+        `"${String(v ?? "").replace(/"/g,'""')}"`
+      ).join(",")
+    )
+    .join("\n");
+
+  const blob = new Blob([csv],{
+    type:"text/csv;charset=utf-8"
+  });
+
+  const a = document.createElement("a");
+  const url = URL.createObjectURL(blob);
+
+  a.href = url;
+  a.download = "X-AURA-members.csv";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+};
+
+/* =========================
+   Realtime
+   ========================= */
+
+let realtimeChannel = null;
+
+function subscribeRealtime(){
+  if(!db) return;
+
+  if(realtimeChannel){
+    db.removeChannel(realtimeChannel);
+  }
+
+  realtimeChannel = db
+    .channel("x-aura-members-admin")
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"members"
+      },
+      payload=>{
+        const m = payload.new;
+
+        $("newCount").textContent =
+          Number($("newCount").textContent || 0) + 1;
+
+        toast(
+          "🔔 عضو جديد في X AURA",
+          `${m.first_name || ""} ${m.nickname || ""} قام بالتسجيل.`
         );
 
-        return;
-    }
+        loadMembers();
+      }
+    )
+    .subscribe();
+}
 
+/* استعادة جلسة الإدارة بعد إعادة فتح الصفحة */
+window.addEventListener("load", async ()=>{
+  if(!db) return;
 
+  const { data:{session} } = await db.auth.getSession();
+
+  if(session && session.user?.id === ADMIN_UID){
+    $("publicPage").style.display = "none";
+    $("adminPage").style.display = "block";
     await loadMembers();
-
-    await updateStats();
-
-}
-
-
-/* =========================================
-   LOGOUT
-========================================= */
-
-async function logoutAdmin(){
-
-    await supabaseClient.auth.signOut();
-
-
-    document
-    .getElementById("adminPanel")
-    .style.display =
-        "none";
-
-
-    allMembers = [];
-
-}
-
-
-/* =========================================
-   CSV
-========================================= */
-
-async function exportCSV(){
-
-    const admin =
-        await isAdmin();
-
-
-    if(!admin){
-
-        alert(
-            "غير مصرح."
-        );
-
-        return;
-    }
-
-
-    if(!allMembers.length){
-
-        await loadMembers();
-
-    }
-
-
-    if(!allMembers.length){
-
-        alert(
-            "لا توجد بيانات لتصديرها."
-        );
-
-        return;
-    }
-
-
-    let csv =
-        "الاسم,اللقب,العمر,Free Fire ID,البلد,Instagram,التاريخ\n";
-
-
-    allMembers.forEach(
-        function(member){
-
-            const date =
-                member.created_at
-                ? new Date(
-                    member.created_at
-                ).toLocaleString("ar-DZ")
-                : "";
-
-
-            csv +=
-                `"${csvEscape(member.first_name)}","${csvEscape(member.nickname)}","${csvEscape(member.age)}","${csvEscape(member.ffid)}","${csvEscape(member.country)}","${csvEscape(member.instagram)}","${csvEscape(date)}"\n`;
-
-        }
-    );
-
-
-    const blob =
-        new Blob(
-            [
-                "\uFEFF" +
-                csv
-            ],
-            {
-                type:
-                    "text/csv;charset=utf-8;"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(blob);
-
-
-    const a =
-        document.createElement("a");
-
-
-    a.href = url;
-
-    a.download =
-        "X-AURA-Members.csv";
-
-
-    document.body.appendChild(a);
-
-    a.click();
-
-    a.remove();
-
-    URL.revokeObjectURL(url);
-
-}
-
-
-/* =========================================
-   SESSION
-========================================= */
-
-async function checkCurrentAdmin(){
-
-    const {
-        data
-    } =
-    await supabaseClient
-    .auth.getSession();
-
-
-    const session =
-        data.session;
-
-
-    if(
-        session &&
-        session.user &&
-        session.user.id === ADMIN_UID
-    ){
-
-        await showAdminPanel();
-
-    }
-
-}
-
-
-/* =========================================
-   AUTH STATE
-========================================= */
-
-supabaseClient
-.auth
-.onAuthStateChange(
-    async function(event, session){
-
-        if(
-            session &&
-            session.user &&
-            session.user.id === ADMIN_UID
-        ){
-
-            document
-            .getElementById(
-                "adminPanel"
-            )
-            .style.display =
-                "block";
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   START
-========================================= */
-
-checkCurrentAdmin();
-
+    subscribeRealtime();
+  }
+});
 </script>
-
 </body>
-    </html>
+</html>
